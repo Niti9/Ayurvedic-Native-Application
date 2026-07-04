@@ -80,3 +80,5 @@ yarn-error.log
 .env.production
 .env.local
 .env.*
+
+ProjectReadme.md

@@ -2,30 +2,18 @@
   "extends": "@react-native/typescript-config",
   "compilerOptions": {
     "types": ["jest"],
-    "baseUrl": "./src",
-
     "paths": {
-      "@/*": ["*"],
-
-      "@/components/*": ["components/*"],
-
-      "@/modules/*": ["modules/*"],
-
-      "@/services/*": ["services/*"],
-
-      "@/navigation/*": ["navigation/*"],
-
-      "@/hooks/*": ["hooks/*"],
-
-      "@/store/*": ["store/*"],
-
-      "@/theme/*": ["theme/*"],
-
-      "@/utils/*": ["utils/*"],
-
-      "@/types/*": ["types/*"],
-
-      "@/config/*": ["config/*"]
+      "@/*": ["./src/*"],
+      "@/components/*": ["./src/components/*"],
+      "@/modules/*": ["./src/modules/*"],
+      "@/services/*": ["./src/services/*"],
+      "@/navigation/*": ["./src/navigation/*"],
+      "@/hooks/*": ["./src/hooks/*"],
+      "@/store/*": ["./src/store/*"],
+      "@/theme/*": ["./src/theme/*"],
+      "@/utils/*": ["./src/utils/*"],
+      "@/types/*": ["./src/types/*"],
+      "@/config/*": ["./src/config/*"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx"],

@@ -1,11 +1,13 @@
-import { View, Text } from 'react-native';
 import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+
+import BottomTabs from './BottomTabs';
 
 const RootNavigator = () => {
   return (
-    <View>
-      <Text>RootNavigator</Text>
-    </View>
+    <NavigationContainer>
+      <BottomTabs />
+    </NavigationContainer>
   );
 };
 

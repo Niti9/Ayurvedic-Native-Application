@@ -1,11 +1,21 @@
-import { View, Text } from 'react-native';
 import React from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+import { ConsultationStackParamList } from './types';
+import DoctorListScreen from '@/modules/consultation/screens/DoctorListScreen';
+
+const Stack = createNativeStackNavigator<ConsultationStackParamList>();
 
 const ConsultationStack = () => {
   return (
-    <View>
-      <Text>ConsultationStack</Text>
-    </View>
+    <Stack.Navigator
+      initialRouteName="DoctorList"
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen name="DoctorList" component={DoctorListScreen} />
+    </Stack.Navigator>
   );
 };
 

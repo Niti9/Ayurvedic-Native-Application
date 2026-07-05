@@ -9,14 +9,14 @@ export type BookingStatus =
 
 export interface Booking {
   id: string;
-
   doctor: Doctor;
-
   slot: Slot;
-
   bookedAt: string;
-
   status: BookingStatus;
-
   isOffline: boolean;
+}
+
+export interface BookingResult {
+  success: boolean;
+  message: string;
 }

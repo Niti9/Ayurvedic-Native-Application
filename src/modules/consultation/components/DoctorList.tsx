@@ -32,6 +32,13 @@ const DoctorList = ({ search }: Props) => {
     [navigation],
   );
 
+  const filters = {
+    specialty: undefined,
+    language: undefined,
+    availableToday: undefined,
+    sort: undefined,
+  };
+
   const {
     data,
 
@@ -48,7 +55,7 @@ const DoctorList = ({ search }: Props) => {
     refetch,
 
     isRefetching,
-  } = useDoctors(debouncedSearch);
+  } = useDoctors(debouncedSearch, filters);
 
   // Optimization 1: Memoize flatMap so it only computes when data coordinates change
   const doctors = useMemo(() => {
@@ -106,7 +113,10 @@ const DoctorList = ({ search }: Props) => {
       onEndReached={handleEndReached}
       onEndReachedThreshold={0.5}
       refreshing={isRefetching}
-      onRefresh={refetch}
+      // onRefresh={refetch}
+      onRefresh={() => {
+        refetch(); // Direct refetch bypasses staleTime
+      }}
       ListFooterComponent={renderFooter}
     />
   );

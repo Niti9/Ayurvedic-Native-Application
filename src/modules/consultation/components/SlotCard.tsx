@@ -9,9 +9,14 @@ interface Props {
 }
 
 const SlotCard = ({ slot, selected, onPress }: Props) => {
+  const isDisabled = slot.status !== 'AVAILABLE';
   return (
     <TouchableOpacity
-      style={[styles.card, selected && styles.selected]}
+      style={[
+        styles.card,
+        isDisabled && styles.disabledCard,
+        selected && styles.selectedCard,
+      ]}
       onPress={() => onPress(slot)}
       disabled={slot.status !== 'AVAILABLE'}
     >
@@ -31,9 +36,15 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: '#EEE',
   },
-
   selected: {
     borderWidth: 2,
     borderColor: '#0A8F55',
+  },
+  disabledCard: {
+    opacity: 0.5,
+  },
+  selectedCard: {
+    borderWidth: 2,
+    borderColor: '#2e7d32',
   },
 });

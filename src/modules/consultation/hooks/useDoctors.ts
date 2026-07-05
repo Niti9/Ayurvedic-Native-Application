@@ -1,6 +1,7 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 
 import { doctorRepository } from '../repository/doctorRepository';
+import { DoctorFilters } from '../types/filter';
 
 const CACHE_CONFIG = {
   retry: 2, // Gracefully handle random failures
@@ -8,9 +9,9 @@ const CACHE_CONFIG = {
   gcTime: 1000 * 60 * 30, //Keep them in memory or Retain in background cache for 30 minutes
 };
 
-export const useDoctors = (search: string) => {
+export const useDoctors = (search: string, filters: DoctorFilters) => {
   return useInfiniteQuery({
-    queryKey: ['doctors', search],
+    queryKey: ['doctors', search, filters],
 
     initialPageParam: 1,
 
@@ -19,6 +20,7 @@ export const useDoctors = (search: string) => {
         page: pageParam,
         limit: 20,
         search,
+        ...filters,
       }),
 
     getNextPageParam: lastPage => {

@@ -1,4 +1,8 @@
-export type SlotStatus = 'AVAILABLE' | 'BOOKED' | 'LOCKED' | 'EXPIRED';
+export type SlotStatus =
+  | 'AVAILABLE'
+  | 'BOOKED'
+  | 'LOCKED_FOR_CHECKOUT'
+  | 'EXPIRED';
 
 export interface Slot {
   id: string;

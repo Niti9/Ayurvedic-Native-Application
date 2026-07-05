@@ -1,5 +1,6 @@
 import apiClient from '@/ services/api/apiClient';
 import { DoctorListResponse } from '../types/doctor';
+import { DoctorFilters } from '../types/filter';
 
 export interface DoctorQueryParams {
   page?: number;
@@ -33,3 +34,9 @@ export const getDoctorById = async (doctorId: string) => {
 
   return doctor;
 };
+
+export interface DoctorQueryParams extends DoctorFilters {
+  page?: number;
+  limit?: number;
+  search?: string;
+}

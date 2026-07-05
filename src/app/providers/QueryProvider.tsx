@@ -1,11 +1,10 @@
-import { View, Text } from 'react-native';
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { queryClient } from '@/config/queryClient';
 
-const QueryProvider = () => {
+const QueryProvider = ({ children }: PropsWithChildren) => {
   return (
-    <View>
-      <Text>QueryProvider</Text>
-    </View>
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
 };
 

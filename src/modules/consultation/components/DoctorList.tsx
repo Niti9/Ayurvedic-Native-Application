@@ -7,13 +7,30 @@ import DoctorCard from '../components/DoctorCard';
 import { useDebounce } from '@/hooks/useDebounce';
 import { Doctor } from '../types/doctor';
 import EmptyState from '@/components/EmptyState/EmptyState';
+import { useNavigation } from '@react-navigation/native';
+import { ConsultationStackParamList } from '@/navigation/types';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 interface Props {
   search: string;
 }
 
+type NavigationProp = NativeStackNavigationProp<
+  ConsultationStackParamList,
+  'DoctorList'
+>;
+
 const DoctorList = ({ search }: Props) => {
+  const navigation = useNavigation<NavigationProp>();
   const debouncedSearch = useDebounce(search);
+  const handleDoctorPress = useCallback(
+    (doctorId: string) => {
+      navigation.navigate('DoctorDetail', {
+        doctorId,
+      });
+    },
+    [navigation],
+  );
 
   const {
     data,
@@ -40,9 +57,12 @@ const DoctorList = ({ search }: Props) => {
   }, [data?.pages]);
 
   // Optimization 2: Stabilize item renderer with useCallback reference
-  const renderDoctorItem = useCallback(({ item }: { item: Doctor }) => {
-    return <DoctorCard doctor={item} />;
-  }, []);
+  const renderDoctorItem = useCallback(
+    ({ item }: { item: Doctor }) => {
+      return <DoctorCard doctor={item} onPress={handleDoctorPress} />;
+    },
+    [handleDoctorPress],
+  );
 
   // Optimization 3: Stabilize footer node to avoid layout calculation thrashing
   const renderFooter = useCallback(() => {

@@ -2,7 +2,7 @@ import apiClient from '@/ services/api/apiClient';
 import { DoctorListResponse } from '../types/doctor';
 import { DoctorFilters } from '../types/filter';
 
-export interface DoctorQueryParams {
+export interface DoctorQueryParams extends DoctorFilters {
   page?: number;
   limit?: number;
   search?: string;
@@ -11,8 +11,16 @@ export interface DoctorQueryParams {
 export const getDoctors = async (
   params: DoctorQueryParams,
 ): Promise<DoctorListResponse> => {
-  const response = await apiClient.get<DoctorListResponse>('/doctors', {
-    params,
+  const response = await apiClient.get('/doctors', {
+    params: {
+      page: params.page,
+      limit: params.limit,
+      search: params.search,
+      specialty: params.specialty,
+      language: params.language,
+      available_today: params.availableToday,
+      sort: params.sort,
+    },
   });
 
   return response.data;

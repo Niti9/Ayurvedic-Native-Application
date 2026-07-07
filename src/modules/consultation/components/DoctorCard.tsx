@@ -2,6 +2,7 @@ import React, { useCallback } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { Doctor } from '../types/doctor';
+import Rating from '@/components/Rating/Rating';
 
 interface Props {
   doctor: Doctor;
@@ -10,7 +11,6 @@ interface Props {
 
 const DoctorCard = ({ doctor, onPress }: Props) => {
   const handlePress = () => {
-    console.log('handlePressed id:', doctor.id);
     onPress?.(doctor.id);
   };
 
@@ -29,15 +29,28 @@ const DoctorCard = ({ doctor, onPress }: Props) => {
 
         <Text>{doctor.experience_years} Years Experience</Text>
 
-        <Text>⭐ {doctor.rating}</Text>
+        <Rating value={doctor.rating} />
 
-        <Text>₹ {doctor.consultation_fee}</Text>
+        <Text>
+          {doctor.currency === 'INR' ? '₹' : doctor.currency}{' '}
+          {doctor.consultation_fee}
+        </Text>
       </View>
     </TouchableOpacity>
   );
 };
 
-export default React.memo(DoctorCard);
+// export default React.memo(DoctorCard);
+
+export default React.memo(
+  // This avoids unnecessary rerenders when the parent updates.
+  DoctorCard,
+
+  (prev, next) =>
+    prev.doctor.id === next.doctor.id &&
+    prev.doctor.rating === next.doctor.rating &&
+    prev.doctor.consultation_fee === next.doctor.consultation_fee,
+);
 
 const styles = StyleSheet.create({
   card: {

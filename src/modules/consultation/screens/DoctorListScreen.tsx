@@ -1,9 +1,10 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
 import Screen from '@/components/layout/Screen';
 import DoctorFilters, { DoctorFilterType } from '../components/DoctorFilters';
 import DoctorList from '../components/DoctorList';
 import SearchBar from '@/components/SearchBar/SearchBar';
+import { mapFilterToQuery } from '../utils/filterMapper';
 
 const DoctorListScreen = () => {
   const [search, setSearch] = useState('');
@@ -14,6 +15,7 @@ const DoctorListScreen = () => {
   const handleSelectFilter = useCallback((filter: DoctorFilterType) => {
     setActiveFilter(filter);
   }, []);
+  const filters = useMemo(() => mapFilterToQuery(activeFilter), [activeFilter]);
 
   return (
     <Screen>
@@ -24,7 +26,7 @@ const DoctorListScreen = () => {
         onSelectFilter={handleSelectFilter}
       />
 
-      <DoctorList search={search} />
+      <DoctorList search={search} filters={filters} />
     </Screen>
   );
 };

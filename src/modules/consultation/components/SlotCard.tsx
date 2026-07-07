@@ -1,6 +1,8 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { Slot } from '../types/slot';
+import { formatTime } from '../utils/date';
+import StatusBadge from '@/components/Badge/StatusBadge';
 
 interface Props {
   slot: Slot;
@@ -14,15 +16,20 @@ const SlotCard = ({ slot, selected, onPress }: Props) => {
     <TouchableOpacity
       style={[
         styles.card,
-        isDisabled && styles.disabledCard,
-        selected && styles.selectedCard,
+        slot.status === 'BOOKED' && styles.bookedCard,
+        slot.status === 'LOCKED_FOR_CHECKOUT' && styles.lockedCard,
+        slot.status === 'EXPIRED' && styles.expiredCard,
+        selected && slot.status === 'AVAILABLE' && styles.selectedCard,
       ]}
       onPress={() => onPress(slot)}
-      disabled={slot.status !== 'AVAILABLE'}
+      disabled={isDisabled}
+      activeOpacity={0.8}
     >
-      <Text>{new Date(slot.start_time).toLocaleTimeString()}</Text>
+      <Text>
+        {formatTime(slot.start_time)} - {formatTime(slot.end_time)}
+      </Text>
 
-      <Text>{slot.status}</Text>
+      <StatusBadge label={slot.status} />
     </TouchableOpacity>
   );
 };
@@ -31,20 +38,28 @@ export default React.memo(SlotCard);
 
 const styles = StyleSheet.create({
   card: {
-    padding: 12,
-    marginBottom: 10,
-    borderRadius: 10,
-    backgroundColor: '#EEE',
-  },
-  selected: {
-    borderWidth: 2,
-    borderColor: '#0A8F55',
-  },
-  disabledCard: {
-    opacity: 0.5,
+    padding: 14,
+    marginBottom: 12,
+    borderRadius: 12,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#ECECEC',
   },
   selectedCard: {
+    borderColor: '#2E7D32',
     borderWidth: 2,
-    borderColor: '#2e7d32',
+  },
+  bookedCard: {
+    backgroundColor: '#FFF5F5',
+  },
+  lockedCard: {
+    backgroundColor: '#FFFBEB',
+  },
+  expiredCard: {
+    backgroundColor: '#F3F4F6',
+  },
+  time: {
+    fontWeight: '600',
+    fontSize: 15,
   },
 });

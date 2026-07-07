@@ -10,9 +10,11 @@ import EmptyState from '@/components/EmptyState/EmptyState';
 import { useNavigation } from '@react-navigation/native';
 import { ConsultationStackParamList } from '@/navigation/types';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { DoctorFilters } from '../types/filter';
 
 interface Props {
   search: string;
+  filters: DoctorFilters;
 }
 
 type NavigationProp = NativeStackNavigationProp<
@@ -20,7 +22,7 @@ type NavigationProp = NativeStackNavigationProp<
   'DoctorList'
 >;
 
-const DoctorList = ({ search }: Props) => {
+const DoctorList = ({ search, filters }: Props) => {
   const navigation = useNavigation<NavigationProp>();
   const debouncedSearch = useDebounce(search);
   const handleDoctorPress = useCallback(
@@ -31,13 +33,6 @@ const DoctorList = ({ search }: Props) => {
     },
     [navigation],
   );
-
-  const filters = {
-    specialty: undefined,
-    language: undefined,
-    availableToday: undefined,
-    sort: undefined,
-  };
 
   const {
     data,

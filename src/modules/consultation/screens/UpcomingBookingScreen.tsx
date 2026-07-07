@@ -1,29 +1,35 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { useBooking } from '../hooks/useBooking';
 import BookingCard from '../components/BookingCard';
+import EmptyState from '@/components/EmptyState/EmptyState';
+import { Booking } from '../types/booking';
+import { isFutureDate } from '../utils/date';
 
 const UpcomingBookingScreen = () => {
   const { bookings } = useBooking();
   console.log('bookings are ', bookings);
 
-  const upcomingBookings = bookings.filter(
-    booking =>
-      booking.status === 'BOOKED' &&
-      new Date(booking.slot.start_time) > new Date(),
-  );
+  const upcomingBookings = useMemo(() => {
+    return bookings
+      .filter(
+        booking =>
+          booking.status === 'BOOKED' && isFutureDate(booking.slot.start_time),
+      )
+      .sort(
+        (a, b) =>
+          new Date(a.slot.start_time).getTime() -
+          new Date(b.slot.start_time).getTime(),
+      );
+  }, [bookings]);
 
   const renderItem = useCallback(
-    ({ item }: any) => <BookingCard booking={item} />,
+    ({ item }: { item: Booking }) => <BookingCard booking={item} />,
     [],
   );
 
   if (upcomingBookings.length === 0) {
-    return (
-      <View style={styles.center}>
-        <Text>No upcoming consultations.</Text>
-      </View>
-    );
+    return <EmptyState title="No Upcoming consultations" />;
   }
 
   return (
@@ -36,11 +42,3 @@ const UpcomingBookingScreen = () => {
 };
 
 export default UpcomingBookingScreen;
-
-const styles = StyleSheet.create({
-  center: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});

@@ -18,6 +18,12 @@ import { Slot } from '../types/slot';
 import { useBooking } from '../hooks/useBooking';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ConsultationStackParamList } from '@/navigation/types';
+import EmptyState from '@/components/EmptyState/EmptyState';
+import { BookingResult } from '../types/booking';
+import DoctorProfile from '../components/DoctorProfile';
+import PrimaryButton from '@/components/Button/PrimaryButton';
+import DoctorProfileSkeleton from '../components/DoctorProfileSkeleton';
+import { useMergedSlots } from '../hooks/useMergedSlots';
 
 type NavigationProp = NativeStackNavigationProp<
   ConsultationStackParamList,
@@ -26,20 +32,25 @@ type NavigationProp = NativeStackNavigationProp<
 
 const DoctorDetailScreen = () => {
   const route = useRoute<any>();
-  const { bookAppointment } = useBooking();
+  const { bookAppointment, clearBookings } = useBooking();
   const navigation = useNavigation<NavigationProp>();
 
   const doctorId = route.params.doctorId;
 
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
+  const [result, setResult] = useState<BookingResult | null>(null);
+  const [checkSlot, setCheckSlot] = useState<Boolean>(false);
 
   const { data: doctor, isLoading } = useDoctor(doctorId);
 
-  const { data: slots = [] } = useSlots(doctorId);
+  // const { data: slots = [] } = useSlots(doctorId);
+  const { data: slots = [] } = useMergedSlots(doctorId);
+
   const availableSlots = useMemo(() => {
     return slots.filter(slot => slot.status === 'AVAILABLE');
   }, [slots]);
 
+  console.log('Available slots:', availableSlots);
   const handleBook = useCallback(() => {
     if (!doctor) {
       return;
@@ -51,6 +62,7 @@ const DoctorDetailScreen = () => {
     }
 
     const result = bookAppointment(doctor, selectedSlot);
+    setResult(result);
 
     Alert.alert(result.success ? 'Success' : 'Booking Failed', result.message);
 
@@ -69,15 +81,16 @@ const DoctorDetailScreen = () => {
   }, []);
 
   if (isLoading) {
-    return <ActivityIndicator />;
+    return <DoctorProfileSkeleton />;
+  }
+
+  if (availableSlots.length === 0 && checkSlot === true) {
+    return <EmptyState title="No slots available" />;
   }
 
   return (
     <ScrollView>
-      <Text>{doctor?.name}</Text>
-
-      <Text>{doctor?.title}</Text>
-
+      <DoctorProfile doctor={doctor!} />
       <FlatList
         data={availableSlots}
         keyExtractor={item => item.id}
@@ -90,12 +103,22 @@ const DoctorDetailScreen = () => {
           />
         )}
       />
+      {availableSlots.length === 0 ? (
+        <PrimaryButton
+          title="Check Appointments"
+          onPress={() => {
+            setCheckSlot(!checkSlot);
+          }}
+        />
+      ) : (
+        <PrimaryButton
+          title="Book Appointment"
+          onPress={handleBook}
+          disabled={!selectedSlot}
+        />
+      )}
 
-      <Button
-        title="Book Appointment"
-        disabled={!selectedSlot}
-        onPress={handleBook}
-      />
+      <PrimaryButton title="Clear Appointments" onPress={clearBookings} />
     </ScrollView>
   );
 };

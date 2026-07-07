@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
 
 import { Booking } from '../types/booking';
 import { useBooking } from '../hooks/useBooking';
+import { formatTime } from '../utils/date';
 
 interface Props {
   booking: Booking;
@@ -11,15 +12,25 @@ interface Props {
 const BookingCard = ({ booking }: Props) => {
   const { cancelBooking } = useBooking();
 
+  const handleCancel = useCallback(() => {
+    cancelBooking(booking.id);
+  }, [booking.id, cancelBooking]);
+
   return (
     <View style={styles.card}>
-      <Text style={styles.name}>{booking.doctor.name}</Text>
-
-      <Text>{booking.doctor.title}</Text>
+      <Text>{booking.doctor.name}</Text>
 
       <Text>{booking.slot.start_time}</Text>
+      <Text>
+        {formatTime(booking.slot.start_time)} -{' '}
+        {formatTime(booking.slot.end_time)}
+      </Text>
 
-      <Button title="Cancel" onPress={() => cancelBooking(booking.id)} />
+      <Text>Status : {booking.status}</Text>
+
+      {booking.status === 'BOOKED' && (
+        <Button title="Cancel Booking" color="red" onPress={handleCancel} />
+      )}
     </View>
   );
 };
@@ -28,15 +39,9 @@ export default React.memo(BookingCard);
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#fff',
-    margin: 12,
+    margin: 16,
     padding: 16,
-    borderRadius: 10,
-    elevation: 3,
-  },
-
-  name: {
-    fontWeight: '700',
-    fontSize: 18,
+    borderRadius: 12,
+    backgroundColor: '#fff',
   },
 });
